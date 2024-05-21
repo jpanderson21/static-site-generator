@@ -3,6 +3,22 @@ import os
 from markdown_blocks import markdown_to_html_node
 
 
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    if not os.path.exists(dir_path_content):
+        raise Exception("Content directory does not exist")
+
+    contents = os.listdir(dir_path_content)
+    for item in contents:
+        item_path = os.path.join(dir_path_content, item)
+        if os.path.isfile(item_path):
+            item_name = item.split(".")[0]
+            dest_name = item_name + ".html"
+            item_dest_path = os.path.join(dest_dir_path, dest_name)
+            generate_page(item_path, template_path, item_dest_path)
+        else:
+            item_dest_path = os.path.join(dest_dir_path, item)
+            generate_pages_recursive(item_path, template_path, item_dest_path)
+
 def extract_title(markdown):
     for line in markdown.splitlines():
         if line.startswith("# ") and len(line) > 2:
